@@ -8,10 +8,10 @@ type SidebarProps = {
 
 export default function Sidebar({ folders }: SidebarProps) {
   return (
-    <aside className="flex w-56 shrink-0 flex-col gap-4 border-r border-black/[.08] p-4 dark:border-white/[.145]">
+    <aside className="flex w-56 shrink-0 flex-col gap-5 border-r border-[var(--divider)] p-5">
       <Link
         href="/"
-        className="flex w-full items-center gap-2 rounded-lg bg-black/[.06] px-3 py-2 text-left text-sm font-medium text-foreground dark:bg-white/[.08]"
+        className="list-hover flex w-full items-center gap-2 rounded-lg bg-[var(--hover-bg)] px-3 py-2 text-left text-sm font-medium text-[var(--text)]"
       >
         <span aria-hidden>🗂️</span>
         ALL

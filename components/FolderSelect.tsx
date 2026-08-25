@@ -17,7 +17,7 @@ export default function FolderSelect({
       name="folder"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-lg border border-black/[.08] bg-transparent px-3 py-2 text-sm text-foreground outline-none focus:border-black/[.2] dark:border-white/[.145] dark:focus:border-white/[.3]"
+      className="input-focus select-arrow w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)]"
     >
       <option value="">폴더 선택 안 함</option>
       {folders.map((folder) => (

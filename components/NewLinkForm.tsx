@@ -26,7 +26,10 @@ export default function NewLinkForm({ folders }: NewLinkFormProps) {
       className="flex w-full max-w-md flex-col gap-5"
     >
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="url" className="text-sm font-medium text-foreground">
+        <label
+          htmlFor="url"
+          className="text-sm font-medium text-[var(--text)]"
+        >
           링크 주소
         </label>
         <input
@@ -37,14 +40,14 @@ export default function NewLinkForm({ folders }: NewLinkFormProps) {
           placeholder="https://example.com"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full rounded-lg border border-black/[.08] bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-foreground/40 focus:border-black/[.2] dark:border-white/[.145] dark:focus:border-white/[.3]"
+          className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)]"
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="folder"
-          className="text-sm font-medium text-foreground"
+          className="text-sm font-medium text-[var(--text)]"
         >
           폴더
         </label>
@@ -57,7 +60,7 @@ export default function NewLinkForm({ folders }: NewLinkFormProps) {
 
       <button
         type="submit"
-        className="mt-2 flex items-center justify-center rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]"
+        className="btn-primary mt-2 flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-3 text-[17px] font-medium text-white"
       >
         저장
       </button>

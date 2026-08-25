@@ -26,9 +26,9 @@ export default async function FolderPage({
         <Sidebar folders={folders} />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="flex items-center gap-2 px-6 pt-6">
+          <div className="flex items-center gap-2 px-6 pt-8">
             <span aria-hidden>📁</span>
-            <h1 className="text-xl font-semibold text-foreground">
+            <h1 className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
               {folder.name}
             </h1>
           </div>

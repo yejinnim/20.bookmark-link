@@ -18,7 +18,12 @@ export default function FolderListItem({
         href={`/folder/${folder.id}`}
         className="flex min-w-0 flex-1 items-center gap-2 text-sm text-[var(--text)]"
       >
-        <span aria-hidden>📁</span>
+        <span
+          aria-hidden
+          className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+        >
+          📁
+        </span>
         <span className="truncate">{folder.name}</span>
       </Link>
 
@@ -33,7 +38,12 @@ export default function FolderListItem({
             aria-label={`${folder.name} 폴더 수정`}
             className="flex items-center justify-center text-[var(--text-sub)] transition-colors hover:text-[var(--accent)]"
           >
-            <span aria-hidden>✏️</span>
+            <span
+              aria-hidden
+              className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+            >
+              ✏️
+            </span>
           </button>
           <button
             type="button"
@@ -41,7 +51,12 @@ export default function FolderListItem({
             aria-label={`${folder.name} 폴더 삭제`}
             className="flex items-center justify-center text-[var(--text-sub)] transition-colors hover:text-[var(--error)]"
           >
-            <span aria-hidden>🗑️</span>
+            <span
+              aria-hidden
+              className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+            >
+              🗑️
+            </span>
           </button>
         </div>
       </div>

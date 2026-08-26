@@ -2,11 +2,13 @@ import type { Bookmark } from "@/app/_lib/types";
 
 type BookmarkCardProps = {
   bookmark: Bookmark;
+  onEditClick: (bookmark: Bookmark) => void;
   onDeleteClick: (bookmark: Bookmark) => void;
 };
 
 export default function BookmarkCard({
   bookmark,
+  onEditClick,
   onDeleteClick,
 }: BookmarkCardProps) {
   return (
@@ -50,14 +52,24 @@ export default function BookmarkCard({
         </div>
       </a>
 
-      <button
-        type="button"
-        onClick={() => onDeleteClick(bookmark)}
-        aria-label={`${bookmark.title} 링크 삭제`}
-        className="absolute right-3 top-3 hidden items-center justify-center rounded-full bg-[var(--card-bg)] p-1.5 text-[var(--text-sub)] shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-colors hover:text-[var(--error)] group-hover:flex"
-      >
-        <span aria-hidden>🗑️</span>
-      </button>
+      <div className="absolute right-3 top-3 hidden items-center gap-1.5 group-hover:flex">
+        <button
+          type="button"
+          onClick={() => onEditClick(bookmark)}
+          aria-label={`${bookmark.title} 링크 수정`}
+          className="flex items-center justify-center rounded-full bg-[var(--card-bg)] p-1.5 text-[var(--text-sub)] shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-colors hover:text-[var(--accent)]"
+        >
+          <span aria-hidden>✏️</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onDeleteClick(bookmark)}
+          aria-label={`${bookmark.title} 링크 삭제`}
+          className="flex items-center justify-center rounded-full bg-[var(--card-bg)] p-1.5 text-[var(--text-sub)] shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-colors hover:text-[var(--error)]"
+        >
+          <span aria-hidden>🗑️</span>
+        </button>
+      </div>
     </div>
   );
 }

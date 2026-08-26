@@ -20,10 +20,17 @@ type NewBookmarkInput = {
   thumbnail?: string | null;
 };
 
+type BookmarkUpdateInput = {
+  title: string;
+  description: string;
+  folderId: string;
+};
+
 type BookmarksContextValue = {
   bookmarks: Bookmark[];
   addBookmark: (input: NewBookmarkInput) => void;
   removeBookmark: (id: string) => void;
+  updateBookmark: (id: string, input: BookmarkUpdateInput) => void;
 };
 
 const BookmarksContext = createContext<BookmarksContextValue | null>(null);
@@ -65,9 +72,34 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     [bookmarks, decrementFolderCount]
   );
 
+  const updateBookmark = useCallback(
+    (id: string, input: BookmarkUpdateInput) => {
+      const target = bookmarks.find((bookmark) => bookmark.id === id);
+
+      setBookmarks((prev) =>
+        prev.map((bookmark) =>
+          bookmark.id === id
+            ? {
+                ...bookmark,
+                title: input.title,
+                description: input.description,
+                folderId: input.folderId,
+              }
+            : bookmark
+        )
+      );
+
+      if (target && target.folderId !== input.folderId) {
+        if (target.folderId) decrementFolderCount(target.folderId);
+        if (input.folderId) incrementFolderCount(input.folderId);
+      }
+    },
+    [bookmarks, incrementFolderCount, decrementFolderCount]
+  );
+
   const value = useMemo(
-    () => ({ bookmarks, addBookmark, removeBookmark }),
-    [bookmarks, addBookmark, removeBookmark]
+    () => ({ bookmarks, addBookmark, removeBookmark, updateBookmark }),
+    [bookmarks, addBookmark, removeBookmark, updateBookmark]
   );
 
   return (

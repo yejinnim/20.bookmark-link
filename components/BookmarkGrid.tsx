@@ -5,13 +5,16 @@ import type { Bookmark } from "@/app/_lib/types";
 import { useBookmarks } from "@/app/_lib/bookmarks-context";
 import BookmarkCard from "@/components/BookmarkCard";
 import DeleteBookmarkModal from "@/components/DeleteBookmarkModal";
+import EditBookmarkModal from "@/components/EditBookmarkModal";
 
 type BookmarkGridProps = {
   folderId?: string;
 };
 
 export default function BookmarkGrid({ folderId }: BookmarkGridProps) {
-  const { bookmarks, removeBookmark } = useBookmarks();
+  const { bookmarks, removeBookmark, updateBookmark } = useBookmarks();
+  const [bookmarkPendingEdit, setBookmarkPendingEdit] =
+    useState<Bookmark | null>(null);
   const [bookmarkPendingDelete, setBookmarkPendingDelete] =
     useState<Bookmark | null>(null);
 
@@ -23,6 +26,16 @@ export default function BookmarkGrid({ folderId }: BookmarkGridProps) {
     if (!bookmarkPendingDelete) return;
     removeBookmark(bookmarkPendingDelete.id);
     setBookmarkPendingDelete(null);
+  };
+
+  const handleSaveEdit = (input: {
+    title: string;
+    description: string;
+    folderId: string;
+  }) => {
+    if (!bookmarkPendingEdit) return;
+    updateBookmark(bookmarkPendingEdit.id, input);
+    setBookmarkPendingEdit(null);
   };
 
   if (visibleBookmarks.length === 0) {
@@ -40,10 +53,17 @@ export default function BookmarkGrid({ folderId }: BookmarkGridProps) {
           <BookmarkCard
             key={bookmark.id}
             bookmark={bookmark}
+            onEditClick={setBookmarkPendingEdit}
             onDeleteClick={setBookmarkPendingDelete}
           />
         ))}
       </div>
+
+      <EditBookmarkModal
+        bookmark={bookmarkPendingEdit}
+        onCancel={() => setBookmarkPendingEdit(null)}
+        onSave={handleSaveEdit}
+      />
 
       <DeleteBookmarkModal
         bookmark={bookmarkPendingDelete}

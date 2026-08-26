@@ -14,6 +14,7 @@ import { folders as initialFolders } from "@/app/_lib/mock-data";
 type FoldersContextValue = {
   folders: Folder[];
   addFolder: (name: string) => void;
+  removeFolder: (id: string) => void;
 };
 
 const FoldersContext = createContext<FoldersContextValue | null>(null);
@@ -35,7 +36,14 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
     ]);
   }, []);
 
-  const value = useMemo(() => ({ folders, addFolder }), [folders, addFolder]);
+  const removeFolder = useCallback((id: string) => {
+    setFolders((prev) => prev.filter((folder) => folder.id !== id));
+  }, []);
+
+  const value = useMemo(
+    () => ({ folders, addFolder, removeFolder }),
+    [folders, addFolder, removeFolder]
+  );
 
   return (
     <FoldersContext.Provider value={value}>{children}</FoldersContext.Provider>

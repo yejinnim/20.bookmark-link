@@ -2,15 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { Folder } from "@/app/_lib/types";
+import { useFolders } from "@/app/_lib/folders-context";
 import FolderSelect from "@/components/FolderSelect";
 
-type NewLinkFormProps = {
-  folders: Folder[];
-};
-
-export default function NewLinkForm({ folders }: NewLinkFormProps) {
+export default function NewLinkForm() {
   const router = useRouter();
+  const { folders } = useFolders();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
 

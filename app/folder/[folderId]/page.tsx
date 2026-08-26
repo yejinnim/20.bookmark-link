@@ -23,7 +23,7 @@ export default async function FolderPage({
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar folders={folders} />
+        <Sidebar />
 
         <main className="flex-1 overflow-y-auto">
           <div className="flex items-center gap-2 px-6 pt-8">

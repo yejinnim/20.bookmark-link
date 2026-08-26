@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FoldersProvider } from "./_lib/folders-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <FoldersProvider>{children}</FoldersProvider>
+      </body>
     </html>
   );
 }

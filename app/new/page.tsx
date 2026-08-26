@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import NewLinkForm from "@/components/NewLinkForm";
 import Sidebar from "@/components/Sidebar";
-import { folders } from "../_lib/mock-data";
 
 export default function NewLinkPage() {
   return (
@@ -9,14 +8,14 @@ export default function NewLinkPage() {
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar folders={folders} />
+        <Sidebar />
 
         <main className="flex flex-1 items-center justify-center overflow-y-auto p-6">
           <div className="flex w-full max-w-md flex-col items-center gap-6">
             <h1 className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
               새 링크 추가
             </h1>
-            <NewLinkForm folders={folders} />
+            <NewLinkForm />
           </div>
         </main>
       </div>

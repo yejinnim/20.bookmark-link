@@ -5,10 +5,14 @@ import { useState } from "react";
 import type { Folder } from "@/app/_lib/types";
 import { useFolders } from "@/app/_lib/folders-context";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
+import EditFolderModal from "@/components/EditFolderModal";
 import FolderList from "@/components/FolderList";
 
 export default function Sidebar() {
-  const { folders, removeFolder } = useFolders();
+  const { folders, removeFolder, renameFolder } = useFolders();
+  const [folderPendingEdit, setFolderPendingEdit] = useState<Folder | null>(
+    null
+  );
   const [folderPendingDelete, setFolderPendingDelete] =
     useState<Folder | null>(null);
 
@@ -16,6 +20,12 @@ export default function Sidebar() {
     if (!folderPendingDelete) return;
     removeFolder(folderPendingDelete.id);
     setFolderPendingDelete(null);
+  };
+
+  const handleSaveEdit = (name: string) => {
+    if (!folderPendingEdit) return;
+    renameFolder(folderPendingEdit.id, name);
+    setFolderPendingEdit(null);
   };
 
   return (
@@ -28,7 +38,17 @@ export default function Sidebar() {
         ALL
       </Link>
 
-      <FolderList folders={folders} onDeleteClick={setFolderPendingDelete} />
+      <FolderList
+        folders={folders}
+        onEditClick={setFolderPendingEdit}
+        onDeleteClick={setFolderPendingDelete}
+      />
+
+      <EditFolderModal
+        folder={folderPendingEdit}
+        onCancel={() => setFolderPendingEdit(null)}
+        onSave={handleSaveEdit}
+      />
 
       <DeleteFolderModal
         folder={folderPendingDelete}

@@ -3,11 +3,13 @@ import type { Folder } from "@/app/_lib/types";
 
 type FolderListItemProps = {
   folder: Folder;
+  onEditClick: (folder: Folder) => void;
   onDeleteClick: (folder: Folder) => void;
 };
 
 export default function FolderListItem({
   folder,
+  onEditClick,
   onDeleteClick,
 }: FolderListItemProps) {
   return (
@@ -20,18 +22,28 @@ export default function FolderListItem({
         <span className="truncate">{folder.name}</span>
       </Link>
 
-      <div className="flex w-5 shrink-0 items-center justify-center">
+      <div className="flex w-10 shrink-0 items-center justify-end gap-1">
         <span className="text-xs text-[var(--text-sub)] group-hover:hidden">
           {folder.count}
         </span>
-        <button
-          type="button"
-          onClick={() => onDeleteClick(folder)}
-          aria-label={`${folder.name} 폴더 삭제`}
-          className="hidden items-center justify-center text-[var(--text-sub)] transition-colors hover:text-[var(--error)] group-hover:flex"
-        >
-          <span aria-hidden>🗑️</span>
-        </button>
+        <div className="hidden items-center gap-1 group-hover:flex">
+          <button
+            type="button"
+            onClick={() => onEditClick(folder)}
+            aria-label={`${folder.name} 폴더 수정`}
+            className="flex items-center justify-center text-[var(--text-sub)] transition-colors hover:text-[var(--accent)]"
+          >
+            <span aria-hidden>✏️</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onDeleteClick(folder)}
+            aria-label={`${folder.name} 폴더 삭제`}
+            className="flex items-center justify-center text-[var(--text-sub)] transition-colors hover:text-[var(--error)]"
+          >
+            <span aria-hidden>🗑️</span>
+          </button>
+        </div>
       </div>
     </li>
   );

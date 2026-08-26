@@ -15,6 +15,7 @@ type FoldersContextValue = {
   folders: Folder[];
   addFolder: (name: string) => void;
   removeFolder: (id: string) => void;
+  renameFolder: (id: string, name: string) => void;
 };
 
 const FoldersContext = createContext<FoldersContextValue | null>(null);
@@ -40,9 +41,20 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
     setFolders((prev) => prev.filter((folder) => folder.id !== id));
   }, []);
 
+  const renameFolder = useCallback((id: string, name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    setFolders((prev) =>
+      prev.map((folder) =>
+        folder.id === id ? { ...folder, name: trimmed } : folder
+      )
+    );
+  }, []);
+
   const value = useMemo(
-    () => ({ folders, addFolder, removeFolder }),
-    [folders, addFolder, removeFolder]
+    () => ({ folders, addFolder, removeFolder, renameFolder }),
+    [folders, addFolder, removeFolder, renameFolder]
   );
 
   return (

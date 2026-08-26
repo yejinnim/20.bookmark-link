@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BookmarksProvider } from "./_lib/bookmarks-context";
 import { FoldersProvider } from "./_lib/folders-context";
 import "./globals.css";
 
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <FoldersProvider>{children}</FoldersProvider>
+        <FoldersProvider>
+          <BookmarksProvider>{children}</BookmarksProvider>
+        </FoldersProvider>
       </body>
     </html>
   );

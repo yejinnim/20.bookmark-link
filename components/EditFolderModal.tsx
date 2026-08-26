@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Folder } from "@/app/_lib/types";
 
 type EditFolderModalProps = {
@@ -14,15 +14,27 @@ export default function EditFolderModal({
   onCancel,
   onSave,
 }: EditFolderModalProps) {
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    if (folder) {
-      setName(folder.name);
-    }
-  }, [folder]);
-
   if (!folder) return null;
+
+  // 폴더가 바뀔 때마다 입력값을 새로 초기화하기 위해 id를 key로 사용해 리마운트한다.
+  return (
+    <EditFolderDialog
+      key={folder.id}
+      folder={folder}
+      onCancel={onCancel}
+      onSave={onSave}
+    />
+  );
+}
+
+type EditFolderDialogProps = {
+  folder: Folder;
+  onCancel: () => void;
+  onSave: (name: string) => void;
+};
+
+function EditFolderDialog({ folder, onCancel, onSave }: EditFolderDialogProps) {
+  const [name, setName] = useState(folder.name);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

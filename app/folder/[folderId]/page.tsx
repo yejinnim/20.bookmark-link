@@ -1,22 +1,16 @@
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useFolders } from "@/app/_lib/folders-context";
 import BookmarkGrid from "@/components/BookmarkGrid";
+import FolderNotFound from "@/components/FolderNotFound";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { bookmarks, folders } from "../../_lib/mock-data";
 
-export default async function FolderPage({
-  params,
-}: {
-  params: Promise<{ folderId: string }>;
-}) {
-  const { folderId } = await params;
+export default function FolderPage() {
+  const { folderId } = useParams<{ folderId: string }>();
+  const { folders } = useFolders();
   const folder = folders.find((f) => f.id === folderId);
-
-  if (!folder) {
-    notFound();
-  }
-
-  const folderBookmarks = bookmarks.filter((b) => b.folderId === folderId);
 
   return (
     <div className="flex h-full flex-col">
@@ -26,13 +20,19 @@ export default async function FolderPage({
         <Sidebar />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="flex items-center gap-2 px-6 pt-8">
-            <span aria-hidden>📁</span>
-            <h1 className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
-              {folder.name}
-            </h1>
-          </div>
-          <BookmarkGrid bookmarks={folderBookmarks} />
+          {folder ? (
+            <>
+              <div className="flex items-center gap-2 px-6 pt-8">
+                <span aria-hidden>📁</span>
+                <h1 className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
+                  {folder.name}
+                </h1>
+              </div>
+              <BookmarkGrid folderId={folderId} />
+            </>
+          ) : (
+            <FolderNotFound />
+          )}
         </main>
       </div>
     </div>

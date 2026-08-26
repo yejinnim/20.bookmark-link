@@ -1,7 +1,6 @@
 import BookmarkGrid from "@/components/BookmarkGrid";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { bookmarks } from "./_lib/mock-data";
 
 export default function Home() {
   return (
@@ -12,7 +11,7 @@ export default function Home() {
         <Sidebar />
 
         <main className="flex-1 overflow-y-auto">
-          <BookmarkGrid bookmarks={bookmarks} />
+          <BookmarkGrid />
         </main>
       </div>
     </div>

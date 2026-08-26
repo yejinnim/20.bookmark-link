@@ -2,19 +2,54 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useBookmarks } from "@/app/_lib/bookmarks-context";
 import { useFolders } from "@/app/_lib/folders-context";
+import type { OgData } from "@/app/api/og/route";
 import FolderSelect from "@/components/FolderSelect";
 
 export default function NewLinkForm() {
   const router = useRouter();
   const { folders } = useFolders();
+  const { addBookmark } = useBookmarks();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: 실제 저장 로직 연동
-    router.push("/");
+    if (isSubmitting) return;
+
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch(`/api/og?url=${encodeURIComponent(url)}`);
+      const data: OgData | { error: string } = await res.json();
+
+      if (!res.ok || "error" in data) {
+        throw new Error(
+          "error" in data ? data.error : "오픈 그래프 정보를 가져오지 못했습니다."
+        );
+      }
+
+      addBookmark({
+        title: data.title,
+        url: data.url,
+        description: data.description,
+        thumbnail: data.thumbnail,
+        folderId,
+      });
+
+      router.push("/");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "링크를 저장하는 중 오류가 발생했습니다."
+      );
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -34,10 +69,11 @@ export default function NewLinkForm() {
           name="url"
           type="url"
           required
+          disabled={isSubmitting}
           placeholder="https://example.com"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)]"
+          className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)] disabled:opacity-50"
         />
       </div>
 
@@ -55,11 +91,16 @@ export default function NewLinkForm() {
         />
       </div>
 
+      {error ? (
+        <p className="text-sm text-[var(--error)]">{error}</p>
+      ) : null}
+
       <button
         type="submit"
-        className="btn-primary mt-2 flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-3 text-[17px] font-medium text-white"
+        disabled={isSubmitting}
+        className="btn-primary mt-2 flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-3 text-[17px] font-medium text-white disabled:cursor-not-allowed disabled:opacity-30"
       >
-        저장
+        {isSubmitting ? "가져오는 중..." : "저장"}
       </button>
     </form>
   );

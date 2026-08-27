@@ -30,7 +30,7 @@ type BookmarkUpdateInput = {
 type BookmarksContextValue = {
   bookmarks: Bookmark[];
   addBookmark: (input: NewBookmarkInput) => Promise<void>;
-  removeBookmark: (id: string) => void;
+  removeBookmark: (id: string) => Promise<void>;
   updateBookmark: (id: string, input: BookmarkUpdateInput) => Promise<void>;
 };
 
@@ -108,9 +108,19 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     [supabase]
   );
 
-  const removeBookmark = useCallback((id: string) => {
-    setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
-  }, []);
+  const removeBookmark = useCallback(
+    async (id: string) => {
+      const { error } = await supabase
+        .from("links")
+        .delete()
+        .eq("id", Number(id));
+
+      if (error) return;
+
+      setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
+    },
+    [supabase]
+  );
 
   const updateBookmark = useCallback(
     async (id: string, input: BookmarkUpdateInput) => {

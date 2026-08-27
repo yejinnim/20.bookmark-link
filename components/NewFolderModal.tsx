@@ -9,22 +9,23 @@ type NewFolderModalProps = {
 };
 
 export default function NewFolderModal({ open, onClose }: NewFolderModalProps) {
-  const { addFolder } = useFolders();
+  const { addFolder, isAddingFolder } = useFolders();
   const [name, setName] = useState("");
 
   if (!open) return null;
 
   const handleClose = () => {
+    if (isAddingFolder) return;
     setName("");
     onClose();
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = name.trim();
-    if (!trimmed) return;
+    if (!trimmed || isAddingFolder) return;
 
-    addFolder(trimmed);
+    await addFolder(trimmed);
     setName("");
     onClose();
   };
@@ -74,15 +75,17 @@ export default function NewFolderModal({ open, onClose }: NewFolderModalProps) {
             <button
               type="button"
               onClick={handleClose}
-              className="link-hover px-4 py-2.5 text-[15px] font-medium text-[var(--accent)]"
+              disabled={isAddingFolder}
+              className="link-hover px-4 py-2.5 text-[15px] font-medium text-[var(--accent)] disabled:opacity-50"
             >
               취소
             </button>
             <button
               type="submit"
-              className="btn-primary flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-2.5 text-[15px] font-medium text-white"
+              disabled={isAddingFolder}
+              className="btn-primary flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-2.5 text-[15px] font-medium text-white disabled:opacity-60"
             >
-              저장
+              {isAddingFolder ? "저장 중…" : "저장"}
             </button>
           </div>
         </form>

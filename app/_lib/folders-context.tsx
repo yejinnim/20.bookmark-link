@@ -4,16 +4,19 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import type { Folder } from "@/app/_lib/types";
-import { folders as initialFolders } from "@/app/_lib/mock-data";
+import { createClient } from "@/utils/supabase/client";
 
 type FoldersContextValue = {
   folders: Folder[];
-  addFolder: (name: string) => void;
+  isAddingFolder: boolean;
+  addFolder: (name: string) => Promise<void>;
   removeFolder: (id: string) => void;
   renameFolder: (id: string, name: string) => void;
   incrementFolderCount: (id: string) => void;
@@ -22,22 +25,67 @@ type FoldersContextValue = {
 
 const FoldersContext = createContext<FoldersContextValue | null>(null);
 
+type FolderRow = {
+  id: number;
+  name: string;
+  created_at: string;
+};
+
+const toFolder = (row: FolderRow): Folder => ({
+  id: String(row.id),
+  name: row.name,
+  count: 0,
+});
+
 export function FoldersProvider({ children }: { children: ReactNode }) {
-  const [folders, setFolders] = useState<Folder[]>(initialFolders);
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [isAddingFolder, setIsAddingFolder] = useState(false);
+  const addingRef = useRef(false);
+  const supabase = useMemo(() => createClient(), []);
 
-  const addFolder = useCallback((name: string) => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
+  useEffect(() => {
+    let active = true;
 
-    setFolders((prev) => [
-      ...prev,
-      {
-        id: `folder-${Date.now()}`,
-        name: trimmed,
-        count: 0,
-      },
-    ]);
-  }, []);
+    supabase
+      .from("folders")
+      .select("id, name, created_at")
+      .order("created_at", { ascending: true })
+      .then(({ data, error }) => {
+        if (!active || error || !data) return;
+        setFolders((data as FolderRow[]).map(toFolder));
+      }, () => {});
+
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
+
+  const addFolder = useCallback(
+    async (name: string) => {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      if (addingRef.current) return;
+
+      addingRef.current = true;
+      setIsAddingFolder(true);
+
+      try {
+        const { data, error } = await supabase
+          .from("folders")
+          .insert({ name: trimmed })
+          .select("id, name, created_at")
+          .single();
+
+        if (error || !data) return;
+
+        setFolders((prev) => [...prev, toFolder(data as FolderRow)]);
+      } finally {
+        addingRef.current = false;
+        setIsAddingFolder(false);
+      }
+    },
+    [supabase]
+  );
 
   const removeFolder = useCallback((id: string) => {
     setFolders((prev) => prev.filter((folder) => folder.id !== id));
@@ -75,6 +123,7 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       folders,
+      isAddingFolder,
       addFolder,
       removeFolder,
       renameFolder,
@@ -83,6 +132,7 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
     }),
     [
       folders,
+      isAddingFolder,
       addFolder,
       removeFolder,
       renameFolder,

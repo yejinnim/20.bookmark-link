@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useBookmarks } from "@/app/_lib/bookmarks-context";
 import { useFolders } from "@/app/_lib/folders-context";
 import type { OgData } from "@/app/api/og/route";
@@ -15,11 +15,13 @@ export default function NewLinkForm() {
   const [folderId, setFolderId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const submittingRef = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (submittingRef.current || isSubmitting) return;
 
+    submittingRef.current = true;
     setError(null);
     setIsSubmitting(true);
 
@@ -33,7 +35,7 @@ export default function NewLinkForm() {
         );
       }
 
-      addBookmark({
+      await addBookmark({
         title: data.title,
         url: data.url,
         description: data.description,
@@ -49,6 +51,7 @@ export default function NewLinkForm() {
           : "링크를 저장하는 중 오류가 발생했습니다."
       );
       setIsSubmitting(false);
+      submittingRef.current = false;
     }
   };
 

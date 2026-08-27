@@ -4,13 +4,14 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import type { Bookmark } from "@/app/_lib/types";
-import { bookmarks as initialBookmarks } from "@/app/_lib/mock-data";
-import { useFolders } from "@/app/_lib/folders-context";
+import { createClient } from "@/utils/supabase/client";
 
 type NewBookmarkInput = {
   title: string;
@@ -28,54 +29,91 @@ type BookmarkUpdateInput = {
 
 type BookmarksContextValue = {
   bookmarks: Bookmark[];
-  addBookmark: (input: NewBookmarkInput) => void;
+  addBookmark: (input: NewBookmarkInput) => Promise<void>;
   removeBookmark: (id: string) => void;
   updateBookmark: (id: string, input: BookmarkUpdateInput) => void;
 };
 
 const BookmarksContext = createContext<BookmarksContextValue | null>(null);
 
+const LINK_COLUMNS =
+  "id, url, title, description, thumbnail_url, folder_id, created_at";
+
+type LinkRow = {
+  id: number;
+  url: string;
+  title: string | null;
+  description: string | null;
+  thumbnail_url: string | null;
+  folder_id: number | null;
+  created_at: string;
+};
+
+const toBookmark = (row: LinkRow): Bookmark => ({
+  id: String(row.id),
+  title: row.title ?? "",
+  url: row.url,
+  description: row.description ?? "",
+  folderId: row.folder_id == null ? "" : String(row.folder_id),
+  thumbnail: row.thumbnail_url,
+});
+
 export function BookmarksProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks);
-  const { incrementFolderCount, decrementFolderCount } = useFolders();
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const supabase = useMemo(() => createClient(), []);
+  const addingRef = useRef(false);
+
+  useEffect(() => {
+    let active = true;
+
+    supabase
+      .from("links")
+      .select(LINK_COLUMNS)
+      .order("created_at", { ascending: false })
+      .then(({ data, error }) => {
+        if (!active || error || !data) return;
+        setBookmarks((data as LinkRow[]).map(toBookmark));
+      }, () => {});
+
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
 
   const addBookmark = useCallback(
-    (input: NewBookmarkInput) => {
-      const newBookmark: Bookmark = {
-        id: `bookmark-${Date.now()}`,
-        title: input.title,
-        url: input.url,
-        description: input.description,
-        folderId: input.folderId,
-        thumbnail: input.thumbnail ?? null,
-      };
+    async (input: NewBookmarkInput) => {
+      if (addingRef.current) return;
 
-      setBookmarks((prev) => [newBookmark, ...prev]);
+      addingRef.current = true;
+      try {
+        const { data, error } = await supabase
+          .from("links")
+          .insert({
+            url: input.url,
+            title: input.title,
+            description: input.description,
+            thumbnail_url: input.thumbnail ?? null,
+            folder_id: input.folderId ? Number(input.folderId) : null,
+          })
+          .select(LINK_COLUMNS)
+          .single();
 
-      if (input.folderId) {
-        incrementFolderCount(input.folderId);
+        if (error || !data) return;
+
+        setBookmarks((prev) => [toBookmark(data as LinkRow), ...prev]);
+      } finally {
+        addingRef.current = false;
       }
     },
-    [incrementFolderCount]
+    [supabase]
   );
 
-  const removeBookmark = useCallback(
-    (id: string) => {
-      const target = bookmarks.find((bookmark) => bookmark.id === id);
-
-      setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
-
-      if (target?.folderId) {
-        decrementFolderCount(target.folderId);
-      }
-    },
-    [bookmarks, decrementFolderCount]
-  );
+  const removeBookmark = useCallback((id: string) => {
+    setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
+  }, []);
 
   const updateBookmark = useCallback(
     (id: string, input: BookmarkUpdateInput) => {
-      const target = bookmarks.find((bookmark) => bookmark.id === id);
-
       setBookmarks((prev) =>
         prev.map((bookmark) =>
           bookmark.id === id
@@ -88,13 +126,8 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
             : bookmark
         )
       );
-
-      if (target && target.folderId !== input.folderId) {
-        if (target.folderId) decrementFolderCount(target.folderId);
-        if (input.folderId) incrementFolderCount(input.folderId);
-      }
     },
-    [bookmarks, incrementFolderCount, decrementFolderCount]
+    []
   );
 
   const value = useMemo(

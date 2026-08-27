@@ -31,7 +31,7 @@ type BookmarksContextValue = {
   bookmarks: Bookmark[];
   addBookmark: (input: NewBookmarkInput) => Promise<void>;
   removeBookmark: (id: string) => void;
-  updateBookmark: (id: string, input: BookmarkUpdateInput) => void;
+  updateBookmark: (id: string, input: BookmarkUpdateInput) => Promise<void>;
 };
 
 const BookmarksContext = createContext<BookmarksContextValue | null>(null);
@@ -113,7 +113,18 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateBookmark = useCallback(
-    (id: string, input: BookmarkUpdateInput) => {
+    async (id: string, input: BookmarkUpdateInput) => {
+      const { error } = await supabase
+        .from("links")
+        .update({
+          title: input.title,
+          description: input.description,
+          folder_id: input.folderId ? Number(input.folderId) : null,
+        })
+        .eq("id", Number(id));
+
+      if (error) return;
+
       setBookmarks((prev) =>
         prev.map((bookmark) =>
           bookmark.id === id
@@ -127,7 +138,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
         )
       );
     },
-    []
+    [supabase]
   );
 
   const value = useMemo(

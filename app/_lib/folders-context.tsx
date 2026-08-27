@@ -17,7 +17,7 @@ type FoldersContextValue = {
   folders: Folder[];
   isAddingFolder: boolean;
   addFolder: (name: string) => Promise<void>;
-  removeFolder: (id: string) => void;
+  removeFolder: (id: string) => Promise<void>;
   renameFolder: (id: string, name: string) => Promise<void>;
   incrementFolderCount: (id: string) => void;
   decrementFolderCount: (id: string) => void;
@@ -87,9 +87,19 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
     [supabase]
   );
 
-  const removeFolder = useCallback((id: string) => {
-    setFolders((prev) => prev.filter((folder) => folder.id !== id));
-  }, []);
+  const removeFolder = useCallback(
+    async (id: string) => {
+      const { error } = await supabase
+        .from("folders")
+        .delete()
+        .eq("id", Number(id));
+
+      if (error) return;
+
+      setFolders((prev) => prev.filter((folder) => folder.id !== id));
+    },
+    [supabase]
+  );
 
   const renameFolder = useCallback(
     async (id: string, name: string) => {

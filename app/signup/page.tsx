@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SignupForm from "@/components/SignupForm";
 
 export default function SignupPage() {
   return (
@@ -13,65 +14,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <form className="flex w-full flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-[var(--text)]"
-            >
-              이메일
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)]"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-[var(--text)]"
-            >
-              비밀번호
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              placeholder="비밀번호를 입력하세요"
-              className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)]"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="password-confirm"
-              className="text-sm font-medium text-[var(--text)]"
-            >
-              비밀번호 확인
-            </label>
-            <input
-              id="password-confirm"
-              name="password-confirm"
-              type="password"
-              autoComplete="new-password"
-              placeholder="비밀번호를 다시 입력하세요"
-              className="input-focus w-full rounded-[10px] border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[17px] text-[var(--text)] placeholder:text-[var(--placeholder)]"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary mt-2 flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-3 text-[17px] font-medium text-white"
-          >
-            회원가입
-          </button>
-        </form>
+        <SignupForm />
 
         <p className="text-center text-sm text-[var(--text-sub)]">
           이미 계정이 있으신가요?{" "}

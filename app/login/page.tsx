@@ -16,15 +16,23 @@ export default function LoginPage() {
 
         <LoginForm />
 
-        <p className="text-center text-sm text-[var(--text-sub)]">
-          아직 계정이 없으신가요?{" "}
+        <div className="flex flex-col items-center gap-2 text-center text-sm text-[var(--text-sub)]">
           <Link
-            href="/signup"
+            href="/forgot-password"
             className="link-hover font-medium text-[var(--accent)]"
           >
-            회원가입
+            비밀번호를 잊으셨나요?
           </Link>
-        </p>
+          <p>
+            아직 계정이 없으신가요?{" "}
+            <Link
+              href="/signup"
+              className="link-hover font-medium text-[var(--accent)]"
+            >
+              회원가입
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );

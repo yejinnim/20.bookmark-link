@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import LoginForm from "@/components/LoginForm";
+
+export const metadata: Metadata = {
+  title: "로그인",
+  description: "이메일 또는 카카오 계정으로 로그인하고 북마크를 관리하세요.",
+};
 
 export default function LoginPage() {
   return (

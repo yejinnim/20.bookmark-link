@@ -105,6 +105,13 @@ export default function Sidebar() {
           </span>
           {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
         </button>
+
+        <Link
+          href="/privacy"
+          className="link-hover mt-1 flex w-full items-center px-3 py-1 text-left text-xs text-[var(--text-sub)]"
+        >
+          개인정보 처리방침
+        </Link>
       </div>
     </aside>
   );

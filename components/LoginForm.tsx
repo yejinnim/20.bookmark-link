@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Toast from "@/components/Toast";
@@ -14,9 +15,36 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isKakaoSubmitting, setIsKakaoSubmitting] = useState(false);
   const submittingRef = useRef(false);
 
   const canSubmit = email.trim() !== "" && password !== "" && !isSubmitting;
+
+  const handleKakaoLogin = async () => {
+    if (isKakaoSubmitting) return;
+
+    setError(null);
+    setIsKakaoSubmitting(true);
+
+    try {
+      const supabase = createClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "kakao",
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+        },
+      });
+
+      if (oauthError) {
+        setError("카카오 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        setIsKakaoSubmitting(false);
+      }
+      // 성공 시 카카오 인증 페이지로 이동하므로 별도 처리가 필요 없다.
+    } catch {
+      setError("카카오 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      setIsKakaoSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -111,6 +139,23 @@ export default function LoginForm() {
           className="btn-primary mt-2 flex items-center justify-center rounded-[980px] bg-[var(--accent)] px-6 py-3 text-[17px] font-medium text-white disabled:cursor-not-allowed disabled:opacity-30"
         >
           {isSubmitting ? "로그인 중..." : "로그인"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleKakaoLogin}
+          disabled={isKakaoSubmitting}
+          aria-label="카카오로 로그인"
+          className="relative w-full overflow-hidden rounded-[10px] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Image
+            src="/kakao_login_medium_wide.png"
+            alt="카카오로 로그인"
+            width={300}
+            height={45}
+            className="h-auto w-full"
+            priority={false}
+          />
         </button>
       </form>
     </>

@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Bookmark } from "@/app/_lib/types";
+import { useAuthUserId } from "@/app/_lib/use-auth-user-id";
 import { createClient } from "@/utils/supabase/client";
 
 type NewBookmarkInput = {
@@ -61,24 +62,34 @@ const toBookmark = (row: LinkRow): Bookmark => ({
 export function BookmarksProvider({ children }: { children: ReactNode }) {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const supabase = useMemo(() => createClient(), []);
+  const userId = useAuthUserId(supabase);
   const addingRef = useRef(false);
 
   useEffect(() => {
     let active = true;
 
-    supabase
-      .from("links")
-      .select(LINK_COLUMNS)
-      .order("created_at", { ascending: false })
-      .then(({ data, error }) => {
-        if (!active || error || !data) return;
-        setBookmarks((data as LinkRow[]).map(toBookmark));
-      }, () => {});
+    const load = async () => {
+      if (!userId) {
+        if (active) setBookmarks([]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("links")
+        .select(LINK_COLUMNS)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (!active || error || !data) return;
+      setBookmarks((data as LinkRow[]).map(toBookmark));
+    };
+
+    load();
 
     return () => {
       active = false;
     };
-  }, [supabase]);
+  }, [supabase, userId]);
 
   const addBookmark = useCallback(
     async (input: NewBookmarkInput) => {

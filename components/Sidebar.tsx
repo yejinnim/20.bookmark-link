@@ -56,25 +56,27 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col gap-5 border-r border-[var(--divider)] p-5">
-      <Link
-        href="/"
-        className="list-hover flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--text)]"
-      >
-        <span
-          aria-hidden
-          className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+    <aside className="flex w-56 shrink-0 flex-col border-r border-[var(--divider)]">
+      <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-5">
+        <Link
+          href="/"
+          className="list-hover flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--text)]"
         >
-          🗂️
-        </span>
-        ALL
-      </Link>
+          <span
+            aria-hidden
+            className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+          >
+            🗂️
+          </span>
+          ALL
+        </Link>
 
-      <FolderList
-        folders={foldersWithCount}
-        onEditClick={setFolderPendingEdit}
-        onDeleteClick={setFolderPendingDelete}
-      />
+        <FolderList
+          folders={foldersWithCount}
+          onEditClick={setFolderPendingEdit}
+          onDeleteClick={setFolderPendingDelete}
+        />
+      </div>
 
       <EditFolderModal
         folder={folderPendingEdit}
@@ -88,20 +90,22 @@ export default function Sidebar() {
         onConfirm={handleConfirmDelete}
       />
 
-      <button
-        type="button"
-        onClick={handleLogout}
-        disabled={isLoggingOut}
-        className="list-hover mt-auto flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--text-sub)] disabled:opacity-50"
-      >
-        <span
-          aria-hidden
-          className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+      <div className="shrink-0 border-t border-[var(--divider)] p-5">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="list-hover flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--text-sub)] disabled:opacity-50"
         >
-          ↩
-        </span>
-        {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
-      </button>
+          <span
+            aria-hidden
+            className="flex h-4 w-4 items-center justify-center text-sm leading-none"
+          >
+            ↩
+          </span>
+          {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
+        </button>
+      </div>
     </aside>
   );
 }

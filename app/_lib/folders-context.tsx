@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Folder } from "@/app/_lib/types";
+import { useAuthUserId } from "@/app/_lib/use-auth-user-id";
 import { createClient } from "@/utils/supabase/client";
 
 type FoldersContextValue = {
@@ -42,23 +43,33 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
   const [isAddingFolder, setIsAddingFolder] = useState(false);
   const addingRef = useRef(false);
   const supabase = useMemo(() => createClient(), []);
+  const userId = useAuthUserId(supabase);
 
   useEffect(() => {
     let active = true;
 
-    supabase
-      .from("folders")
-      .select("id, name, created_at")
-      .order("created_at", { ascending: true })
-      .then(({ data, error }) => {
-        if (!active || error || !data) return;
-        setFolders((data as FolderRow[]).map(toFolder));
-      }, () => {});
+    const load = async () => {
+      if (!userId) {
+        if (active) setFolders([]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("folders")
+        .select("id, name, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: true });
+
+      if (!active || error || !data) return;
+      setFolders((data as FolderRow[]).map(toFolder));
+    };
+
+    load();
 
     return () => {
       active = false;
     };
-  }, [supabase]);
+  }, [supabase, userId]);
 
   const addFolder = useCallback(
     async (name: string) => {

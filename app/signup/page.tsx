@@ -4,7 +4,7 @@ import SignupForm from "@/components/SignupForm";
 
 export const metadata: Metadata = {
   title: "회원가입",
-  description: "계정을 만들고 북마크 링크를 시작해보세요.",
+  description: "계정을 만들고 춘천 마임축제 북마크링크를 시작해보세요.",
 };
 
 export default function SignupPage() {
@@ -13,7 +13,7 @@ export default function SignupPage() {
       <div className="flex w-full max-w-sm flex-col gap-10">
         <div className="flex flex-col items-center gap-2">
           <span className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
-            🔖 북마크 링크
+            🔖 춘천 마임축제 북마크링크
           </span>
           <p className="text-sm text-[var(--text-sub)]">
             계정을 만들고 시작해보세요

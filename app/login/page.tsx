@@ -13,7 +13,7 @@ export default function LoginPage() {
       <div className="flex w-full max-w-sm flex-col gap-10">
         <div className="flex flex-col items-center gap-2">
           <span className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
-            🔖 북마크 링크
+            🔖 춘천 마임축제 북마크링크
           </span>
           <p className="text-sm text-[var(--text-sub)]">
             로그인하고 링크를 정리해보세요

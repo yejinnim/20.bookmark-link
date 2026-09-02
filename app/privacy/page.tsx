@@ -3,11 +3,11 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "개인정보 처리방침",
-  description: "북마크 링크의 개인정보 처리방침 안내 페이지입니다.",
+  description: "춘천 마임축제 북마크링크의 개인정보 처리방침 안내 페이지입니다.",
   robots: { index: true, follow: true },
 };
 
-const SERVICE_NAME = "북마크 링크";
+const SERVICE_NAME = "춘천 마임축제 북마크링크";
 const OPERATOR_NAME = "이예진";
 const CONTACT_EMAIL = "dpwls902@naver.com";
 

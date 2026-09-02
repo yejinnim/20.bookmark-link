@@ -26,7 +26,7 @@ export default function Header() {
           href="/"
           className="truncate text-[15px] font-semibold tracking-[-0.3px] text-[var(--text)] sm:text-[17px]"
         >
-          🔖 북마크 링크
+          🔖 춘천 마임축제 북마크링크
         </Link>
       </div>
 

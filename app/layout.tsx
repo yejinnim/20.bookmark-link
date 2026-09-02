@@ -4,7 +4,7 @@ import { FoldersProvider } from "./_lib/folders-context";
 import { SidebarProvider } from "./_lib/sidebar-context";
 import "./globals.css";
 
-const siteName = "북마크 링크";
+const siteName = "춘천 마임축제 북마크링크";
 const siteDescription = "링크를 폴더별로 정리하는 북마크 서비스";
 
 // 소셜 공유 미리보기(og:image 등)는 절대 URL이 필요하다.

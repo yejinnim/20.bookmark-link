@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import NewFolderModal from "@/components/NewFolderModal";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Header() {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
@@ -17,6 +18,8 @@ export default function Header() {
       </Link>
 
       <div className="flex items-center gap-3">
+        <ThemeToggle />
+
         <button
           type="button"
           onClick={() => setIsFolderModalOpen(true)}

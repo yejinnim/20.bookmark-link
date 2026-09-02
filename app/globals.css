@@ -15,6 +15,21 @@
   --hover-bg: #f5f5f7;
 }
 
+:root[data-theme="dark"] {
+  --background: #1c1c1e;
+  --card-bg: #2c2c2e;
+  --text: #f5f5f7;
+  --text-sub: #aeaeb2; /* 원본 #86868B 대비 명암비 보강 */
+  --placeholder: #6e6e73;
+  --border: #48484a;
+  --accent: #2997ff;
+  --accent-hover: #40a9ff;
+  --divider: #48484a;
+  --error: #ff453a;
+  --success: #30d158;
+  --hover-bg: #38383a;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--text);

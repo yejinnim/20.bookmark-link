@@ -7,10 +7,16 @@ import "./globals.css";
 const siteName = "북마크 링크";
 const siteDescription = "링크를 폴더별로 정리하는 북마크 서비스";
 
+// 소셜 공유 미리보기(og:image 등)는 절대 URL이 필요하다.
+// 1) 직접 지정한 NEXT_PUBLIC_SITE_URL → 2) Vercel 배포 도메인 → 3) 로컬 개발
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(siteUrl),
   title: {
     default: siteName,
     template: `%s | ${siteName}`,
@@ -23,7 +29,7 @@ export const metadata: Metadata = {
     title: siteName,
     description: siteDescription,
     siteName,
-    images: [{ url: "/thumbnail.png", width: 2400, height: 1260 }],
+    images: [{ url: "/thumbnail.jpg", width: 1200, height: 630 }],
     locale: "ko_KR",
     type: "website",
   },
@@ -31,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteName,
     description: siteDescription,
-    images: ["/thumbnail.png"],
+    images: ["/thumbnail.jpg"],
   },
 };
 

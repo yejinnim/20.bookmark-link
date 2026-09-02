@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useSidebar } from "@/app/_lib/sidebar-context";
@@ -11,7 +12,18 @@ export default function Header() {
   const { open } = useSidebar();
 
   return (
-    <header className="nav-bar flex h-14 shrink-0 items-center justify-between gap-2 px-4 sm:gap-3 sm:px-6">
+    <header className="nav-bar relative flex h-14 shrink-0 items-center justify-between gap-2 px-4 sm:gap-3 sm:px-6">
+      <span className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+        <Image
+          src="/mime-logo.png"
+          alt="춘천 마임축제"
+          width={713}
+          height={241}
+          priority
+          className="h-7 w-auto"
+        />
+      </span>
+
       <div className="flex min-w-0 items-center gap-1 sm:gap-2">
         <button
           type="button"

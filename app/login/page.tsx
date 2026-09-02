@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import LoginForm from "@/components/LoginForm";
 
@@ -12,6 +13,14 @@ export default function LoginPage() {
     <main className="flex min-h-full flex-1 items-center justify-center p-6">
       <div className="flex w-full max-w-sm flex-col gap-10">
         <div className="flex flex-col items-center gap-2">
+          <Image
+            src="/mime-logo.png"
+            alt="춘천 마임축제"
+            width={713}
+            height={241}
+            priority
+            className="mb-2 h-auto w-44"
+          />
           <span className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
             🔖 춘천 마임축제 북마크링크
           </span>

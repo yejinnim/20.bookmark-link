@@ -32,6 +32,7 @@ type BookmarksContextValue = {
   bookmarks: Bookmark[];
   addBookmark: (input: NewBookmarkInput) => Promise<void>;
   removeBookmark: (id: string) => Promise<void>;
+  removeBookmarksInFolder: (folderId: string) => Promise<void>;
   updateBookmark: (id: string, input: BookmarkUpdateInput) => Promise<void>;
 };
 
@@ -133,6 +134,24 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     [supabase]
   );
 
+  const removeBookmarksInFolder = useCallback(
+    async (folderId: string) => {
+      if (!folderId) return;
+
+      const { error } = await supabase
+        .from("links")
+        .delete()
+        .eq("folder_id", Number(folderId));
+
+      if (error) return;
+
+      setBookmarks((prev) =>
+        prev.filter((bookmark) => bookmark.folderId !== folderId)
+      );
+    },
+    [supabase]
+  );
+
   const updateBookmark = useCallback(
     async (id: string, input: BookmarkUpdateInput) => {
       const { error } = await supabase
@@ -163,8 +182,20 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ bookmarks, addBookmark, removeBookmark, updateBookmark }),
-    [bookmarks, addBookmark, removeBookmark, updateBookmark]
+    () => ({
+      bookmarks,
+      addBookmark,
+      removeBookmark,
+      removeBookmarksInFolder,
+      updateBookmark,
+    }),
+    [
+      bookmarks,
+      addBookmark,
+      removeBookmark,
+      removeBookmarksInFolder,
+      updateBookmark,
+    ]
   );
 
   return (

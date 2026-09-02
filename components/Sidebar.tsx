@@ -17,7 +17,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { isOpen, close } = useSidebar();
   const { folders, removeFolder, renameFolder } = useFolders();
-  const { bookmarks } = useBookmarks();
+  const { bookmarks, removeBookmarksInFolder } = useBookmarks();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [folderPendingEdit, setFolderPendingEdit] = useState<Folder | null>(
     null
@@ -42,10 +42,23 @@ export default function Sidebar() {
     close();
   }, [pathname, close]);
 
-  const handleConfirmDelete = () => {
+  const pendingDeleteLinkCount = folderPendingDelete
+    ? bookmarks.filter(
+        (bookmark) => bookmark.folderId === folderPendingDelete.id
+      ).length
+    : 0;
+
+  const handleConfirmDelete = async (deleteLinks: boolean) => {
     if (!folderPendingDelete) return;
-    removeFolder(folderPendingDelete.id);
+    const folderId = folderPendingDelete.id;
     setFolderPendingDelete(null);
+
+    // 폴더보다 링크를 먼저 지운다. 폴더가 먼저 삭제되면 링크의 folder_id가
+    // 비워져(ON DELETE SET NULL) folder_id로 링크를 찾을 수 없다.
+    if (deleteLinks) {
+      await removeBookmarksInFolder(folderId);
+    }
+    await removeFolder(folderId);
   };
 
   const handleSaveEdit = (name: string) => {
@@ -146,7 +159,9 @@ export default function Sidebar() {
       />
 
       <DeleteFolderModal
+        key={folderPendingDelete?.id ?? "closed"}
         folder={folderPendingDelete}
+        linkCount={pendingDeleteLinkCount}
         onCancel={() => setFolderPendingDelete(null)}
         onConfirm={handleConfirmDelete}
       />

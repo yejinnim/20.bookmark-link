@@ -52,7 +52,7 @@ export default function BookmarkCard({
         </div>
       </a>
 
-      <div className="absolute right-3 top-3 hidden items-center gap-1.5 group-hover:flex">
+      <div className="absolute right-3 top-3 flex items-center gap-1.5 md:hidden md:group-hover:flex">
         <button
           type="button"
           onClick={() => onEditClick(bookmark)}

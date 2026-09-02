@@ -27,11 +27,11 @@ export default function FolderListItem({
         <span className="truncate">{folder.name}</span>
       </Link>
 
-      <div className="flex w-10 shrink-0 items-center justify-end gap-1">
-        <span className="text-xs text-[var(--text-sub)] group-hover:hidden">
+      <div className="flex shrink-0 items-center justify-end gap-1 md:w-10">
+        <span className="hidden text-xs text-[var(--text-sub)] md:inline md:group-hover:hidden">
           {folder.count}
         </span>
-        <div className="hidden items-center gap-1 group-hover:flex">
+        <div className="flex items-center gap-1 md:hidden md:group-hover:flex">
           <button
             type="button"
             onClick={() => onEditClick(folder)}

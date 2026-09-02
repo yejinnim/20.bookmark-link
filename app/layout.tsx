@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BookmarksProvider } from "./_lib/bookmarks-context";
 import { FoldersProvider } from "./_lib/folders-context";
+import { SidebarProvider } from "./_lib/sidebar-context";
 import "./globals.css";
 
 const siteName = "북마크 링크";
@@ -46,7 +47,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <FoldersProvider>
-          <BookmarksProvider>{children}</BookmarksProvider>
+          <BookmarksProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </BookmarksProvider>
         </FoldersProvider>
       </body>
     </html>

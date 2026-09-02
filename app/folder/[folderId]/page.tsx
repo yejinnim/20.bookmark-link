@@ -13,7 +13,7 @@ export default function FolderPage() {
   const folder = folders.find((f) => f.id === folderId);
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-dvh flex-col">
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
@@ -22,7 +22,7 @@ export default function FolderPage() {
         <main className="flex-1 overflow-y-auto">
           {folder ? (
             <>
-              <div className="flex items-center gap-2 px-6 pt-8">
+              <div className="flex items-center gap-2 px-4 pt-8 sm:px-6">
                 <span aria-hidden>📁</span>
                 <h1 className="text-2xl font-semibold tracking-[-0.3px] text-[var(--text)]">
                   {folder.name}

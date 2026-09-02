@@ -48,7 +48,7 @@ export default function BookmarkGrid({ folderId }: BookmarkGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-3 xl:grid-cols-4">
         {visibleBookmarks.map((bookmark) => (
           <BookmarkCard
             key={bookmark.id}
